@@ -21,14 +21,14 @@ print("ip client", remote_client_ip)
 print("tcp client", remote_client_tcp)
 
 # Recibir un mensaje
-bstream = socket_client.recv(1024)
+bstream = socket_client.recv(1502808)
 print("Received!")
 
 try:
     # Decodificacion del mensaje
     print("Decoding...")
     mensaje = bstream.decode()
-    print(mensaje)
+    #print(mensaje)
     lista = json.loads(mensaje) # convierte a lista
     matrix = numpy.array(lista) # convierte a matriz de numpy
     rndrImage = decode(matrix)
