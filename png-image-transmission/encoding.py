@@ -7,7 +7,7 @@ import math
 
 
 #Codificacion
-def encode(bwimage):
+def encode(BWimage):
 	rows,cols=BWimage.shape # Gets size
 	jpgImage=numpy.zeros([rows,cols],dtype=numpy.int8) #Debieran ser 16 bits
 	factor=(0.22/64)

@@ -1,5 +1,8 @@
-import decoding
+from decoding import *
 import socket
+import json
+from signal import signal, SIGPIPE, SIG_DFL
+signal(SIGPIPE, SIG_DFL)
 
 # Creando el socket: protocolos
 socket_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,29 +21,31 @@ print("ip client", remote_client_ip)
 print("tcp client", remote_client_tcp)
 
 # Recibir un mensaje
-mensaje = socket_client.recv(1024)
+bstream = socket_client.recv(1024)
 print("Received!")
 
-# Decodificacion del mensaje
-print("Decoding...")
-lista = json.loads(mensaje) # convierte a lista
-matrix = numpy.array(lista) # convierte a matriz de numpy
-rndrImage = decode(matrix)
+try:
+    # Decodificacion del mensaje
+    print("Decoding...")
+    mensaje = bstream.decode()
+    print(mensaje)
+    lista = json.loads(mensaje) # convierte a lista
+    matrix = numpy.array(lista) # convierte a matriz de numpy
+    rndrImage = decode(matrix)
 
-'''
-signalPower=(BWimage.astype(numpy.int16)**2).mean(axis=None)
-noisePower=( ( BWimage.astype(numpy.int16)-rndrImage.astype(numpy.int16) )**2).mean(axis=None)
-SNR=10*math.log10(signalPower/noisePower)
-print ("SNR: ",SNR)
-'''
-# Visualiza mensaje recibido
-print("Showing received image...")
-cv2.imshow('render', rndrImage) # dtype=uint8
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    '''
+    signalPower=(BWimage.astype(numpy.int16)**2).mean(axis=None)
+    noisePower=( ( BWimage.astype(numpy.int16)-rndrImage.astype(numpy.int16) )**2).mean(axis=None)
+    SNR=10*math.log10(signalPower/noisePower)
+    print ("SNR: ",SNR)
+    '''
+    # Visualiza mensaje recibido
+    print("Showing received image...")
+    cv2.imshow('render', rndrImage) # dtype=uint8
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-print("Success!")
-
-print("bye")
-socket_client.close()
-socket_server.close()
+    print("Success!")
+finally:
+    socket_client.close()
+    socket_server.close()
