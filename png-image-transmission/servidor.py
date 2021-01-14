@@ -1,4 +1,4 @@
-
+import decoding
 import socket
 
 # Creando el socket: protocolos
@@ -18,18 +18,29 @@ print("ip client", remote_client_ip)
 print("tcp client", remote_client_tcp)
 
 # Recibir un mensaje
-while True:
-	mensaje = socket_client.recv(1024)
-	socket_client.send(mensaje)		# envia echo
-	if mensaje == b"quit":
-		break
-	print("> ", mensaje)
+mensaje = socket_client.recv(1024)
+print("Received!")
+
+# Decodificacion del mensaje
+print("Decoding...")
+lista = json.loads(mensaje) # convierte a lista
+matrix = numpy.array(lista) # convierte a matriz de numpy
+rndrImage = decode(matrix)
+
+'''
+signalPower=(BWimage.astype(numpy.int16)**2).mean(axis=None)
+noisePower=( ( BWimage.astype(numpy.int16)-rndrImage.astype(numpy.int16) )**2).mean(axis=None)
+SNR=10*math.log10(signalPower/noisePower)
+print ("SNR: ",SNR)
+'''
+# Visualiza mensaje recibido
+print("Showing received image...")
+cv2.imshow('render', rndrImage) # dtype=uint8
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+print("Success!")
 
 print("bye")
 socket_client.close()
 socket_server.close()
-
-
-
-
-
